@@ -1,0 +1,304 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Product
+{
+public:
+    int id;
+    string name;
+    float price;
+    int quantity;
+
+    void addProduct()
+    {
+        // Product ID
+        while (true)
+        {
+            cout << "\nEnter Product ID: ";
+            if (cin >> id)
+                break;
+
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid input! Please enter a number.\n";
+        }
+
+        cout << "Enter Product Name: ";
+        cin >> name;
+
+        // Price
+        while (true)
+        {
+            cout << "Enter Price: ";
+            if (cin >> price && price >= 0)
+                break;
+
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid price! Please enter a positive number.\n";
+        }
+
+        // Quantity
+        while (true)
+        {
+            cout << "Enter Quantity: ";
+            if (cin >> quantity && quantity >= 0)
+                break;
+
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid quantity! Please enter a positive number.\n";
+        }
+    }
+
+    void displayProduct()
+    {
+        cout << "\nID       : " << id;
+        cout << "\nName     : " << name;
+        cout << "\nPrice    : " << price;
+        cout << "\nQuantity : " << quantity << endl;
+    }
+};
+
+int main()
+{
+    Product p[100];
+    int count = 0;
+    int choice;
+    int id;
+    bool found;
+
+    do
+    {
+        cout << "\n\n===== INVENTORY MANAGEMENT SYSTEM =====";
+        cout << "\n1. Add Product";
+        cout << "\n2. Display Products";
+        cout << "\n3. Search Product";
+        cout << "\n4. Update Product";
+        cout << "\n5. Delete Product";
+        cout << "\n6. Sell Product";
+        cout << "\n7. Exit";
+
+        // Safe menu input
+        cout << "\n\nEnter your choice: ";
+
+        while (!(cin >> choice))
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid input! Please enter a number (1-7): ";
+        }
+
+        if (choice < 1 || choice > 7)
+        {
+            cout << "Invalid choice! Please enter a number from 1 to 7.";
+            continue;
+        }
+
+        switch(choice)
+        {
+            case 1:
+                if (count < 100)
+                {
+                    p[count].addProduct();
+                    count++;
+                    cout << "\nProduct added successfully!";
+                }
+                else
+                {
+                    cout << "\nInventory is full!";
+                }
+                break;
+
+            case 2:
+                if (count == 0)
+                {
+                    cout << "\nNo products available.";
+                }
+                else
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        cout << "\n--- Product " << i + 1 << " ---";
+                        p[i].displayProduct();
+                    }
+                }
+                break;
+
+            case 3:
+                cout << "\nEnter Product ID: ";
+
+                while (!(cin >> id))
+                {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Invalid input! Please enter a number: ";
+                }
+
+                found = false;
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (p[i].id == id)
+                    {
+                        p[i].displayProduct();
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                    cout << "\nProduct not found.";
+
+                break;
+
+            case 4:
+                cout << "\nEnter Product ID to update: ";
+
+                while (!(cin >> id))
+                {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Invalid input! Please enter a number: ";
+                }
+
+                found = false;
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (p[i].id == id)
+                    {
+                        // New Price
+                        while (true)
+                        {
+                            cout << "\nEnter New Price: ";
+
+                            if (cin >> p[i].price && p[i].price >= 0)
+                                break;
+
+                            cin.clear();
+                            cin.ignore(1000, '\n');
+                            cout << "Invalid price! Please enter a positive number.\n";
+                        }
+
+                        // New Quantity
+                        while (true)
+                        {
+                            cout << "Enter New Quantity: ";
+
+                            if (cin >> p[i].quantity && p[i].quantity >= 0)
+                                break;
+
+                            cin.clear();
+                            cin.ignore(1000, '\n');
+                            cout << "Invalid quantity! Please enter a positive number.\n";
+                        }
+
+                        cout << "\nProduct updated successfully!";
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                    cout << "\nProduct not found.";
+
+                break;
+
+            case 5:
+                cout << "\nEnter Product ID to delete: ";
+
+                while (!(cin >> id))
+                {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Invalid input! Please enter a number: ";
+                }
+
+                found = false;
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (p[i].id == id)
+                    {
+                        for (int j = i; j < count - 1; j++)
+                        {
+                            p[j] = p[j + 1];
+                        }
+
+                        count--;
+                        found = true;
+
+                        cout << "\nProduct deleted successfully!";
+                        break;
+                    }
+                }
+
+                if (!found)
+                    cout << "\nProduct not found.";
+
+                break;
+
+            case 6:
+                cout << "\nEnter Product ID to sell: ";
+
+                while (!(cin >> id))
+                {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Invalid input! Please enter a number: ";
+                }
+
+                found = false;
+
+                for (int i = 0; i < count; i++)
+                {
+                    if (p[i].id == id)
+                    {
+                        int sellQuantity;
+
+                        while (true)
+                        {
+                            cout << "Enter quantity to sell: ";
+
+                            if (cin >> sellQuantity)
+                                break;
+
+                            cin.clear();
+                            cin.ignore(1000, '\n');
+                            cout << "Invalid input! Please enter a number.\n";
+                        }
+
+                        if (sellQuantity <= p[i].quantity && sellQuantity > 0)
+                        {
+                            p[i].quantity -= sellQuantity;
+
+                            cout << "\nSale successful!";
+                            cout << "\nRemaining Stock: "
+                                 << p[i].quantity;
+                        }
+                        else
+                        {
+                            cout << "\nInvalid quantity or not enough stock!";
+                        }
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                    cout << "\nProduct not found.";
+
+                break;
+
+            case 7:
+                cout << "\nThank you for using the system!";
+                break;
+        }
+
+    } while (choice != 7);
+
+    return 0;
+}
