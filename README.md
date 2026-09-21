@@ -51,8 +51,7 @@ The main source file currently has no `.cpp` extension. Renaming it to `Inventor
 Because the current source file has no `.cpp` extension, compile it by explicitly specifying the C++ language:
 
 ```bash
-g++ -std=c++11 -Wall -Wextra -pedantic -x c++ Inventory-mgm-sys-code -o inventory
-```
+g++ -std=c++11 -Wall -Wextra -pedantic -x c++ Inventory-mgm-sys-code -o inventory```
 
 If the file has been renamed to `Inventory-mgm-sys-code.cpp`, use:
 
