@@ -1,89 +1,44 @@
-# Inventory Management System
+# Inventory Management System (C++)
 
-A simple command-line inventory management system written in **C++**. This project demonstrates basic object-oriented programming, arrays, input validation, and CRUD-style inventory operations.
-
-> **Project status:** Beginner/student project. The current version stores data in memory only, so all products are lost when the program exits.
+A simple console-based Inventory Management System built in C++ using OOP (class-based) principles. Supports adding, viewing, searching, updating, deleting, and selling products — all in-memory, no database.
 
 ## Features
 
-- Add products with:
-  - Product ID
-  - Product name
-  - Price
-  - Quantity
+- Add new products (ID, name, price, quantity)
 - Display all products
-- Search for a product by ID
-- Update product price and quantity
-- Delete products by ID
-- Sell products and reduce available stock
-- Validate numeric menu, price, quantity, and product ID input
-- Prevent sales when the requested quantity exceeds available stock
-- Limit the inventory to 100 products
+- Search product by ID
+- Update price/quantity of an existing product
+- Delete a product
+- Sell a product (with stock validation)
 
-## Requirements
+## Tech Stack
 
-- A C++ compiler supporting C++11 or later
-- A terminal or command prompt
-
-Recommended tools:
-
-- GCC / G++
-- Clang
-- Visual Studio
-- Code::Blocks
-- Visual Studio Code with a C++ extension
+- **Language:** C++
+- **Concepts used:** Classes & Objects, Arrays of Objects, Loops, Switch-case, Basic I/O
 
 ## Project Structure
 
-```text
-Inventory-Management-System/
-├── Inventory-mgm-sys-code              # Main C++ source file
-├── Inventory_Management_System_Error_Handled.txt
-└── README.md                           # Project documentation
 ```
-
-The main source file currently has no `.cpp` extension. Renaming it to `Inventory-mgm-sys-code.cpp` is recommended so that IDEs, GitHub, and build tools recognize it as a C++ source file.
-
-## How to Compile
-
-### GCC / G++
-
-Because the current source file has no `.cpp` extension, compile it by explicitly specifying the C++ language:
-
-```bash
-g++ -std=c++11 -Wall -Wextra -pedantic -x c++ Inventory-mgm-sys-code -o inventory```
-
-If the file has been renamed to `Inventory-mgm-sys-code.cpp`, use:
-
-```bash
-g++ -std=c++11 -Wall -Wextra -pedantic Inventory-mgm-sys-code.cpp -o inventory
-```
-
-### Clang
-
-```bash
-clang++ -std=c++11 -Wall -Wextra -pedantic -x c++ Inventory-mgm-sys-code -o inventory
+inventory-management-system/
+├── src/
+│   └── main.cpp
+├── README.md
+├── LICENSE
+└── .gitignore
 ```
 
 ## How to Run
 
-### Linux / macOS
-
 ```bash
-./inventory
+git clone https://github.com/<your-username>/inventory-management-system.git
+cd inventory-management-system
+g++ src/main.cpp -o ims
+./ims          # use ims.exe on Windows
 ```
 
-### Windows
+## Sample Menu
 
-```powershell
-.\inventory.exe
 ```
-
-## Usage
-
-After starting the program, choose an option from the menu:
-
-```text
 ===== INVENTORY MANAGEMENT SYSTEM =====
 1. Add Product
 2. Display Products
@@ -94,39 +49,17 @@ After starting the program, choose an option from the menu:
 7. Exit
 ```
 
-A typical workflow is:
+## Limitations / Future Improvements
 
-1. Select **Add Product** to create an inventory item.
-2. Select **Display Products** to view all stored items.
-3. Select **Search Product** to find an item by ID.
-4. Select **Update Product** to change its price or quantity.
-5. Select **Sell Product** to decrease its stock.
-6. Select **Delete Product** to remove it from the inventory.
+- Fixed-size array (max 100 products) — could switch to `vector<Product>`
+- No file/database persistence — data resets on exit
+- No input validation (e.g., negative price/quantity, duplicate IDs)
+- Could split into multiple files (`Product.h`, `Product.cpp`, `main.cpp`)
 
-## Technical Overview
+## Author
 
-The application uses a `Product` class containing:
+Shrey — CSIT student, Tribhuvan University
 
-- `id` — integer product identifier
-- `name` — product name
-- `price` — product price
-- `quantity` — available stock quantity
+## License
 
-Products are stored in a fixed-size array with capacity for 100 items. The `main()` function provides the menu and performs operations such as searching, updating, deleting, and selling products.
-
-## Current Limitations
-
-- Product data is not saved to a file or database.
-- The inventory is limited to 100 products.
-- Duplicate product IDs are currently allowed.
-- Product names cannot contain spaces because input uses `cin >> name`.
-- The program uses `float` for prices, which can cause currency precision problems.
-- Most application logic is contained in `main()`, making the code harder to maintain as features grow.
-- There are no automated tests or continuous integration checks.
-- The source file does not currently use the conventional `.cpp` extension.
-- The program does not show totals, low-stock alerts, sales history, or reports.
-
-.
-
-
-Created by [RacWagg](https://github.com/RacWagg).
+This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
