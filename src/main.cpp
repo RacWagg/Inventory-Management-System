@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <limits>
 using namespace std;
 
 class Product
@@ -12,7 +13,6 @@ public:
 
     void addProduct()
     {
-        // Product ID
         while (true)
         {
             cout << "\nEnter Product ID: ";
@@ -24,10 +24,10 @@ public:
             cout << "Invalid input! Please enter a number.\n";
         }
 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Enter Product Name: ";
-        cin >> name;
+        getline(cin, name);
 
-        // Price
         while (true)
         {
             cout << "Enter Price: ";
@@ -39,7 +39,6 @@ public:
             cout << "Invalid price! Please enter a positive number.\n";
         }
 
-        // Quantity
         while (true)
         {
             cout << "Enter Quantity: ";
@@ -61,6 +60,32 @@ public:
     }
 };
 
+// Returns true if the ID already exists in the inventory
+bool idExists(Product p[], int count, int id)
+{
+    for (int i = 0; i < count; i++)
+    {
+        if (p[i].id == id)
+            return true;
+    }
+    return false;
+}
+
+int readValidId(const string &prompt)
+{
+    int id;
+    cout << prompt;
+
+    while (!(cin >> id))
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Invalid input! Please enter a number: ";
+    }
+
+    return id;
+}
+
 int main()
 {
     Product p[100];
@@ -80,7 +105,6 @@ int main()
         cout << "\n6. Sell Product";
         cout << "\n7. Exit";
 
-        // Safe menu input
         cout << "\n\nEnter your choice: ";
 
         while (!(cin >> choice))
@@ -96,12 +120,62 @@ int main()
             continue;
         }
 
+        // Every operation below except Add/Display needs at least one product
+        if (choice >= 3 && choice <= 6 && count == 0)
+        {
+            cout << "\nNo products available. Add a product first.";
+            continue;
+        }
+
         switch(choice)
         {
             case 1:
                 if (count < 100)
                 {
-                    p[count].addProduct();
+                    // Peek at the ID before committing to the full add flow
+                    int newId;
+                    cout << "\nEnter Product ID: ";
+                    while (!(cin >> newId))
+                    {
+                        cin.clear();
+                        cin.ignore(1000, '\n');
+                        cout << "Invalid input! Please enter a number.\n";
+                    }
+
+                    if (idExists(p, count, newId))
+                    {
+                        cout << "\nA product with this ID already exists! Use Update instead.";
+                        break;
+                    }
+
+                    p[count].id = newId;
+
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cout << "Enter Product Name: ";
+                    getline(cin, p[count].name);
+
+                    while (true)
+                    {
+                        cout << "Enter Price: ";
+                        if (cin >> p[count].price && p[count].price >= 0)
+                            break;
+
+                        cin.clear();
+                        cin.ignore(1000, '\n');
+                        cout << "Invalid price! Please enter a positive number.\n";
+                    }
+
+                    while (true)
+                    {
+                        cout << "Enter Quantity: ";
+                        if (cin >> p[count].quantity && p[count].quantity >= 0)
+                            break;
+
+                        cin.clear();
+                        cin.ignore(1000, '\n');
+                        cout << "Invalid quantity! Please enter a positive number.\n";
+                    }
+
                     count++;
                     cout << "\nProduct added successfully!";
                 }
@@ -118,24 +192,24 @@ int main()
                 }
                 else
                 {
+                    float totalValue = 0;
+
                     for (int i = 0; i < count; i++)
                     {
                         cout << "\n--- Product " << i + 1 << " ---";
                         p[i].displayProduct();
+                        totalValue += p[i].price * p[i].quantity;
+
+                        if (p[i].quantity <= 5)
+                            cout << "*** LOW STOCK WARNING ***\n";
                     }
+
+                    cout << "\nTotal inventory value: " << totalValue << endl;
                 }
                 break;
 
             case 3:
-                cout << "\nEnter Product ID: ";
-
-                while (!(cin >> id))
-                {
-                    cin.clear();
-                    cin.ignore(1000, '\n');
-                    cout << "Invalid input! Please enter a number: ";
-                }
-
+                id = readValidId("\nEnter Product ID: ");
                 found = false;
 
                 for (int i = 0; i < count; i++)
@@ -154,22 +228,13 @@ int main()
                 break;
 
             case 4:
-                cout << "\nEnter Product ID to update: ";
-
-                while (!(cin >> id))
-                {
-                    cin.clear();
-                    cin.ignore(1000, '\n');
-                    cout << "Invalid input! Please enter a number: ";
-                }
-
+                id = readValidId("\nEnter Product ID to update: ");
                 found = false;
 
                 for (int i = 0; i < count; i++)
                 {
                     if (p[i].id == id)
                     {
-                        // New Price
                         while (true)
                         {
                             cout << "\nEnter New Price: ";
@@ -182,7 +247,6 @@ int main()
                             cout << "Invalid price! Please enter a positive number.\n";
                         }
 
-                        // New Quantity
                         while (true)
                         {
                             cout << "Enter New Quantity: ";
@@ -207,15 +271,7 @@ int main()
                 break;
 
             case 5:
-                cout << "\nEnter Product ID to delete: ";
-
-                while (!(cin >> id))
-                {
-                    cin.clear();
-                    cin.ignore(1000, '\n');
-                    cout << "Invalid input! Please enter a number: ";
-                }
-
+                id = readValidId("\nEnter Product ID to delete: ");
                 found = false;
 
                 for (int i = 0; i < count; i++)
@@ -241,15 +297,7 @@ int main()
                 break;
 
             case 6:
-                cout << "\nEnter Product ID to sell: ";
-
-                while (!(cin >> id))
-                {
-                    cin.clear();
-                    cin.ignore(1000, '\n');
-                    cout << "Invalid input! Please enter a number: ";
-                }
-
+                id = readValidId("\nEnter Product ID to sell: ");
                 found = false;
 
                 for (int i = 0; i < count; i++)
@@ -262,12 +310,12 @@ int main()
                         {
                             cout << "Enter quantity to sell: ";
 
-                            if (cin >> sellQuantity)
+                            if (cin >> sellQuantity && sellQuantity >= 0)
                                 break;
 
                             cin.clear();
                             cin.ignore(1000, '\n');
-                            cout << "Invalid input! Please enter a number.\n";
+                            cout << "Invalid input! Please enter a positive number.\n";
                         }
 
                         if (sellQuantity <= p[i].quantity && sellQuantity > 0)
