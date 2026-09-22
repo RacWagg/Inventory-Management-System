@@ -11,18 +11,10 @@ public:
     float price;
     int quantity;
 
-    void addProduct()
+    // id is passed in already validated/unique by the caller
+    void addProduct(int newId)
     {
-        while (true)
-        {
-            cout << "\nEnter Product ID: ";
-            if (cin >> id)
-                break;
-
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input! Please enter a number.\n";
-        }
+        id = newId;
 
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Enter Product Name: ";
@@ -132,15 +124,7 @@ int main()
             case 1:
                 if (count < 100)
                 {
-                    // Peek at the ID before committing to the full add flow
-                    int newId;
-                    cout << "\nEnter Product ID: ";
-                    while (!(cin >> newId))
-                    {
-                        cin.clear();
-                        cin.ignore(1000, '\n');
-                        cout << "Invalid input! Please enter a number.\n";
-                    }
+                    int newId = readValidId("\nEnter Product ID: ");
 
                     if (idExists(p, count, newId))
                     {
@@ -148,34 +132,8 @@ int main()
                         break;
                     }
 
-                    p[count].id = newId;
-
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    cout << "Enter Product Name: ";
-                    getline(cin, p[count].name);
-
-                    while (true)
-                    {
-                        cout << "Enter Price: ";
-                        if (cin >> p[count].price && p[count].price >= 0)
-                            break;
-
-                        cin.clear();
-                        cin.ignore(1000, '\n');
-                        cout << "Invalid price! Please enter a positive number.\n";
-                    }
-
-                    while (true)
-                    {
-                        cout << "Enter Quantity: ";
-                        if (cin >> p[count].quantity && p[count].quantity >= 0)
-                            break;
-
-                        cin.clear();
-                        cin.ignore(1000, '\n');
-                        cout << "Invalid quantity! Please enter a positive number.\n";
-                    }
-
+                    // Single source of truth for add-product input logic
+                    p[count].addProduct(newId);
                     count++;
                     cout << "\nProduct added successfully!";
                 }
@@ -306,19 +264,20 @@ int main()
                     {
                         int sellQuantity;
 
+                        // Zero is rejected here now, not downstream
                         while (true)
                         {
                             cout << "Enter quantity to sell: ";
 
-                            if (cin >> sellQuantity && sellQuantity >= 0)
+                            if (cin >> sellQuantity && sellQuantity > 0)
                                 break;
 
                             cin.clear();
                             cin.ignore(1000, '\n');
-                            cout << "Invalid input! Please enter a positive number.\n";
+                            cout << "Invalid input! Please enter a positive number greater than zero.\n";
                         }
 
-                        if (sellQuantity <= p[i].quantity && sellQuantity > 0)
+                        if (sellQuantity <= p[i].quantity)
                         {
                             p[i].quantity -= sellQuantity;
 
@@ -328,7 +287,7 @@ int main()
                         }
                         else
                         {
-                            cout << "\nInvalid quantity or not enough stock!";
+                            cout << "\nNot enough stock!";
                         }
 
                         found = true;
